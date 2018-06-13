@@ -2,10 +2,12 @@ import time
 from multiprocessing import Process
 import asyncio
 import aiohttp
+from aiohttp import streams
 try:
     from aiohttp.errors import ProxyConnectionError,ServerDisconnectedError,ClientResponseError,ClientConnectorError
 except:
     from aiohttp import ClientProxyConnectionError as ProxyConnectionError,ServerDisconnectedError,ClientResponseError,ClientConnectorError
+    from aiohttp import ClientOSError
 from proxypool.db import RedisClient
 from proxypool.error import ResourceDepletionError
 from proxypool.getter import FreeProxyGetter

@@ -1,7 +1,7 @@
 from .utils import get_page
 from pyquery import PyQuery as pq
 import re
-
+from time import  sleep
 
 class ProxyMetaclass(type):
     """
@@ -18,6 +18,7 @@ class ProxyMetaclass(type):
                 attrs['__CrawlFunc__'].append(k)
                 count += 1
         attrs['__CrawlFuncCount__'] = count
+        print('***************************',count)
         return type.__new__(cls, name, bases, attrs)
 
 
@@ -35,20 +36,23 @@ class FreeProxyGetter(object, metaclass=ProxyMetaclass):
         html = get_page(start_url)
         ip_adress = re.compile('<tr.*?>\s*<td>(.*?)</td>\s*<td>(.*?)</td>')
         # \s* 匹配空格，起到换行作用
-        re_ip_adress = ip_adress.findall(html)
-        for adress, port in re_ip_adress:
-            result = adress + ':' + port
-            yield result.replace(' ', '')
+        if html:
+            re_ip_adress = ip_adress.findall(html)
+            for adress, port in re_ip_adress:
+                result = adress + ':' + port
+                yield result.replace(' ', '')
 
     def crawl_kuaidaili(self):
         for page in range(1, 4):
             # 国内高匿代理
+            sleep(3)
             start_url = 'https://www.kuaidaili.com/free/inha/{}/'.format(page)
             html = get_page(start_url)
-            ip_adress = re.compile(
-                '<td data-title="IP">(.*)</td>\s*<td data-title="PORT">(\w+)</td>'
-            )
+            ip_adress = re.compile('<td data-title="IP">(.*)</td>\s*<td data-title="PORT">(\w+)</td>')
+            if html == None:
+                continue
             re_ip_adress = ip_adress.findall(html)
+
             for adress, port in re_ip_adress:
                 result = adress + ':' + port
                 yield result.replace(' ', '')
@@ -61,6 +65,8 @@ class FreeProxyGetter(object, metaclass=ProxyMetaclass):
                 '<td class="country"><img src="http://fs.xicidaili.com/images/flag/cn.png" alt="Cn" /></td>\s*<td>(.*?)</td>\s*<td>(.*?)</td>'
             )
             # \s* 匹配空格，起到换行作用
+            if html == None:
+                continue
             re_ip_adress = ip_adress.findall(html)
             for adress, port in re_ip_adress:
                 result = adress + ':' + port
@@ -88,6 +94,8 @@ class FreeProxyGetter(object, metaclass=ProxyMetaclass):
                 ' <ul class="l2">\s*<span><li>(.*?)</li></span>\s*<span style="width: 100px;"><li class=".*">(.*?)</li></span>'
             )
             # \s * 匹配空格，起到换行作用
+            if html == None :
+                continue
             re_ip_adress = ip_adress.findall(html)
             for adress, port in re_ip_adress:
                 result = adress + ':' + port
@@ -99,6 +107,8 @@ class FreeProxyGetter(object, metaclass=ProxyMetaclass):
             html = get_page(start_url)
             ip_adress = re.compile('<tr.*?>\s*<td>(.*?)</td>\s*<td>(.*?)</td>')
             # \s* 匹配空格，起到换行作用
+            if html == None:
+                continue
             re_ip_adress = ip_adress.findall(html)
             for adress, port in re_ip_adress:
                 result = adress + ':' + port
@@ -106,6 +116,7 @@ class FreeProxyGetter(object, metaclass=ProxyMetaclass):
 
     def crawl_premproxy(self):
         for i in ['China-01', 'China-02', 'China-03', 'China-04', 'Taiwan-01']:
+            sleep(3)
             start_url = 'https://premproxy.com/proxy-by-country/{}.htm'.format(
                 i)
             html = get_page(start_url)
@@ -117,6 +128,7 @@ class FreeProxyGetter(object, metaclass=ProxyMetaclass):
 
     def crawl_xroxy(self):
         for i in ['CN', 'TW']:
+            sleep(2)
             start_url = 'http://www.xroxy.com/proxylist.php?country={}'.format(
                 i)
             html = get_page(start_url)

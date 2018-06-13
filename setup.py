@@ -9,7 +9,7 @@ setup(
     author_email='cqc@cuiqingcai.com',
     url='https://github.com/Germey/ProxyPool',
     packages=[
-        'proxy-pool'
+        'proxypool'
     ],
     py_modules=['run'],
     include_package_data=True,
